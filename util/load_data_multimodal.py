@@ -10,16 +10,16 @@ import random
 # fc = open('category_summarize_100.json', 'r')
 # dict_list = json.load(fc)
 
-fic = open('category_summarize_100.json', 'r')
+fic = open('data/category_summarize_100.json', 'r')
 category_item = json.load(fic)
 num_category = len(category_item)
 print('more than 100 category: %d' % num_category)
-fr = open('cid2rcid_100.json', 'r')
+fr = open('data/cid2rcid_100.json', 'r')
 cid2rcid = json.load(fr)
 #print (cid2rcid)
-image_feature_path = '/home/lizekun/polyvore_image_vectors/'
+image_feature_path = 'data/polyvore_image_vectors/'
 #image_feature_path = '/home/cuizeyu/polyvore_image_vectors/'
-text_feature_path = '/home/lizekun/polyvore_text_onehot_vectors/'
+text_feature_path = 'data/polyvore_text_onehot_vectors/'
 #text_feature_path = '/home/cuizeyu/polyvore_text_vectors/'
 
 total_graph = np.zeros((num_category, num_category), dtype=np.float32)
@@ -104,7 +104,7 @@ def load_train_data(i, batch_size, outfit_list):
 
 
 def load_train_size():
-    ftrain = open('train_no_dup_new_100.json', 'r')
+    ftrain = open('data/train_no_dup_new_100.json', 'r')
     train_list = json.load(ftrain)
     train_size = len(train_list)
     train_size_ = per_outfit * train_size
@@ -213,7 +213,7 @@ def load_fitb_data(index, batch_size, outfit_list):
     return image, text, graph
 
 def load_test_size():
-    ftest = open('test_no_dup_new_100.json', 'r')
+    ftest = open('data/test_no_dup_new_100.json', 'r')
     test_list = json.load(ftest)
     test_size = len(test_list)
 

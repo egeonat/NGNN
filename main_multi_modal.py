@@ -1,19 +1,19 @@
 import tensorflow as tf
 import numpy as np
 import json
-from load_data_multimodal import load_num_category, load_graph, load_train_data, load_train_size, load_fitb_data, load_test_size, load_auc_data
+from util.load_data_multimodal import load_num_category, load_graph, load_train_data, load_train_size, load_fitb_data, load_test_size, load_auc_data
 #from load_data_2 import load_num_category, load_graph, load_train_data, load_valid_data, load_test_data
 #from taobao_load_data import load_num_category, load_graph, load_train_data, load_valid_data, load_test_data
-from model_multimodal_1 import GNN
+from model.model_multimodal import GNN
 from  datetime import *
 import time
 import pickle
 from tensorflow.contrib.rnn import GRUCell
 import os
 ##################load data###################
-ftrain = open('train_no_dup_new_100.json', 'r')
+ftrain = open('data/train_no_dup_new_100.json', 'r')
 train_outfit_list = json.load(ftrain)
-ftest = open('test_no_dup_new_100.json', 'r')
+ftest = open('data/test_no_dup_new_100.json', 'r')
 test_outfit_list = json.load(ftest)
 
 def cm_ggnn(batch_size, image_hidden_size, text_hidden_size, n_steps, learning_rate, G, num_category, opt, i, beta):
@@ -94,7 +94,7 @@ def cm_ggnn(batch_size, image_hidden_size, text_hidden_size, n_steps, learning_r
     cost_parameter = 0.
     num_parameter = 0.
     for variable in tf.trainable_variables():
-        print (variable)
+        # print (variable)
         cost_parameter += tf.contrib.layers.l2_regularizer(0.1)(variable)
         num_parameter += 1.
     cost_parameter /= num_parameter
@@ -203,7 +203,7 @@ def cm_ggnn(batch_size, image_hidden_size, text_hidden_size, n_steps, learning_r
                                 if np.argmax(a) == 0:
                                     right += 1.
 
-                        print(answer)
+                        # print(answer)
                         accurancy = float(right / test_size_fitb)
                         if accurancy > best_accurancy:
                             best_accurancy = accurancy
@@ -227,7 +227,7 @@ def cm_ggnn(batch_size, image_hidden_size, text_hidden_size, n_steps, learning_r
                                 if np.argmax(a) == 0:
                                     right += 1.
 
-                        print(answer)
+                        # print(answer)
                         auc = float(right / test_size_auc)
 
                         if auc > best_auc:
@@ -284,7 +284,7 @@ def cm_ggnn(batch_size, image_hidden_size, text_hidden_size, n_steps, learning_r
                         a.append(answer[k][0])
                     if np.argmax(a) == 0:
                         right += 1.
-            print(answer)
+            # print(answer)
             accurancy = float(right / test_size_fitb)
 
             ##### AUC #####
@@ -304,7 +304,7 @@ def cm_ggnn(batch_size, image_hidden_size, text_hidden_size, n_steps, learning_r
                     if np.argmax(a) == 0:
                         right += 1.
 
-            print(answer)
+            # print(answer)
             auc = float(right / test_size_auc)
 
             if auc > best_auc:
@@ -342,7 +342,7 @@ if __name__ == '__main__':
     G = load_graph()
     best_accurancy = 0.
     i = 0
-    batch_size = 16
+    batch_size = 24
     image_hidden_size = 12
     text_hidden_size = 12
     n_steps = 3

@@ -73,17 +73,10 @@ def generate_vector(_file_name, word2id):
             #     word_num += 1.
             # vect = vect / word_num
 
-        with open('/home/cuizeyu/polyvore_text_onehot_vectors/' + key + '.json', 'w') as f:
+        with open('./polyvore_text_onehot_vectors/' + key + '.json', 'w') as f:
             f.write(json.dumps(list(vect)))
-
-
 
 
 for idx, _file in enumerate(file_trans_name):
     print(idx, len(file_trans_name))
     generate_vector(file_path + _file, word2id)
-    # for name in sentences.keys():
-     
-
-
-

@@ -10,19 +10,19 @@ import random
 # fc = open('category_summarize_1000.json', 'r')
 # dict_list = json.load(fc)
 
-fic = open('category_summarize_1000.json', 'r')
+fic = open('data/category_summarize_100.json', 'r')
 category_item = json.load(fic)
 num_category = len(category_item)
-print('more than 1000 category: %d' % num_category)
-fr = open('cid2rcid_1000.json', 'r')
+print('more than 100 category: %d' % num_category)
+fr = open('data/cid2rcid_100.json', 'r')
 cid2rcid = json.load(fr)
 #print (cid2rcid)
-feature_path = '/home/lizekun/polyvore_image_vectors/'
+feature_path = 'data/polyvore_image_vectors/'
 #feature_path = '/home/cuizeyu/polyvore_image_vectors/'
 
 total_graph = np.zeros((num_category, num_category), dtype=np.float32)
 # summraize the total_graph first
-ftrain = open('train_no_dup_new_1000.json', 'r')
+ftrain = open('data/train_no_dup_new_100.json', 'r')
 outfit_list = json.load(ftrain)
 ftrain.close()
 
@@ -45,7 +45,7 @@ for idx in range(num_category):
 per_outfit = 8
 
 def load_train_data(i, batch_size):
-    ftrain = open('train_no_dup_new_1000.json', 'r')
+    ftrain = open('data/train_no_dup_new_100.json', 'r')
     outfit_list = json.load(ftrain)
     size = len(outfit_list)
     size_ = size * per_outfit
@@ -114,7 +114,7 @@ def load_train_data(i, batch_size):
 
 
 def load_train_size():
-    ftrain = open('train_no_dup_new_1000.json', 'r')
+    ftrain = open('data/train_no_dup_new_100.json', 'r')
     train_list = json.load(ftrain)
     train_size = len(train_list)
     train_size_ = per_outfit * train_size
@@ -129,7 +129,7 @@ def load_num_category():
     return num_category
 
 # def load_valid_data():
-#     fvalid = open('valid_no_dup_new_1000.json', 'r')
+#     fvalid = open('valid_no_dup_new_100.json', 'r')
 #     valid_list = json.load(fvalid)
 #     valid_size = len(valid_list)
 #     valid_size_ = 0
@@ -141,7 +141,7 @@ def load_num_category():
 #     return image_x, image_pos, image_neg, category_pos, category_neg, graph, valid_size_
 #
 # def load_test_data():
-#     ftest = open('test_no_dup_new_1000.json', 'r')
+#     ftest = open('test_no_dup_new_100.json', 'r')
 #     test_list = json.load(ftest)
 #     test_size = len(test_list)
 #     test_size_ = 0

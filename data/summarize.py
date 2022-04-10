@@ -4,11 +4,11 @@ filter the
 """
 
 
-f1 = open('train_no_dup.json', 'r')
+f1 = open('polyvore/train_no_dup.json', 'r')
 train_list = json.load(f1)
-f2 = open('valid_no_dup.json', 'r')
+f2 = open('polyvore/valid_no_dup.json', 'r')
 valid_list = json.load(f2)
-f3 = open('test_no_dup.json', 'r')
+f3 = open('polyvore/test_no_dup.json', 'r')
 test_list = json.load(f3)
 
 

@@ -6,50 +6,23 @@ from tensorflow.contrib.rnn import GRUCell
 ######################model##########################
 def weights(name, hidden_size, i):
     image_stdv = np.sqrt(1. / (2048))
-    text_stdv = np.sqrt(1. / (2757))
     hidden_stdv = np.sqrt(1. / (hidden_size))
     if name == 'in_image':
         w = tf.get_variable(name='w/in_image_'+ str(i),
                             shape=[2048, hidden_size],
                             initializer=tf.random_normal_initializer(stddev=image_stdv))
-        #w = tf.get_variable(name='gnn/w/in_image_', shape=[2048, hidden_size], initializer=tf.random_normal_initializer)
     if name == 'out_image':
         w = tf.get_variable(name='w/out_image_' + str(i),
                             shape=[hidden_size, 2048],
                             initializer=tf.random_normal_initializer(stddev=image_stdv))
-        #w = tf.get_variable(name='w/out_image_', shape=[hidden_size, 2048], initializer=tf.random_normal_initializer)
-    if name == 'in_text':
-        w = tf.get_variable(name='w/in_text_'+ str(i),
-                            shape=[2757, hidden_size],
-                            initializer=tf.random_normal_initializer(stddev=image_stdv))
-        #w = tf.get_variable(name='gnn/w/in_image_', shape=[2048, hidden_size], initializer=tf.random_normal_initializer)
-    if name == 'out_text':
-        w = tf.get_variable(name='w/out_text_' + str(i),
-                            shape=[hidden_size, 2757],
-                            initializer=tf.random_normal_initializer(stddev=image_stdv))
-        #w = tf.get_variable(name='w/out_image_', shape=[hidden_size, 2048], initializer=tf.random_normal_initializer)
     if name == 'image_hidden_state_out':
         w = tf.get_variable(name='w/image_hidden_state_out' + str(i),
                             shape=[hidden_size, hidden_size],
                             initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-        #w = tf.get_variable(name='w/hidden_state_out_' + str(i), shape=[hidden_size, hidden_size], initializer=tf.random_normal_initializer)
     if name == 'image_hidden_state_in':
-        #w = tf.get_variable(name='w/hidden_state_in_', shape=[hidden_size, hidden_size], initializer=tf.random_normal_initializer)
         w = tf.get_variable(name='w/image_hidden_state_in_' + str(i),
                             shape=[hidden_size, hidden_size],
                             initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-    if name == 'text_hidden_state_out':
-        w = tf.get_variable(name='w/text_hidden_state_out' + str(i),
-                            shape=[hidden_size, hidden_size],
-                            initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-        #w = tf.get_variable(name='w/hidden_state_out_' + str(i), shape=[hidden_size, hidden_size], initializer=tf.random_normal_initializer)
-    if name == 'text_hidden_state_in':
-        #w = tf.get_variable(name='w/hidden_state_in_', shape=[hidden_size, hidden_size], initializer=tf.random_normal_initializer)
-        w = tf.get_variable(name='w/text_hidden_state_in_' + str(i),
-                            shape=[hidden_size, hidden_size],
-                            initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-
-
     return w
 
 
@@ -59,32 +32,11 @@ def biases(name, hidden_size, i):
     if name == 'image_hidden_state_out':
         b = tf.get_variable(name='b/image_hidden_state_out' + str(i), shape=[hidden_size],
                         initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-        # b = tf.get_variable(name='b/hidden_state_out', shape=[hidden_size],
-        #                 initializer=tf.random_normal_initializer)
     if name == 'image_hidden_state_in':
         b = tf.get_variable(name='b/image_hidden_state_in' + str(i), shape=[hidden_size],
                         initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-        # b = tf.get_variable(name='b/hidden_state_in', shape=[hidden_size],
-        #                 initializer=tf.random_normal_initializer)
-    if name == 'text_hidden_state_out':
-        b = tf.get_variable(name='b/text_hidden_state_out' + str(i), shape=[hidden_size],
-                        initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-        # b = tf.get_variable(name='b/hidden_state_out', shape=[hidden_size],
-        #                 initializer=tf.random_normal_initializer)
-    if name == 'text_hidden_state_in':
-        b = tf.get_variable(name='b/text_hidden_state_in' + str(i), shape=[hidden_size],
-                        initializer=tf.random_normal_initializer(stddev=hidden_stdv))
-        # b = tf.get_variable(name='b/hidden_state_in', shape=[hidden_size],
-        #                 initializer=tf.random_normal_initializer)
     if name == 'out_image':
-        # b = tf.get_variable(name='b/out_image_', shape=[2048],
-        #                     initializer=tf.random_normal_initializer)
         b = tf.get_variable(name='b/out_image_' + str(i), shape=[2048],
-                            initializer=tf.random_normal_initializer(stddev=image_stdv))
-    if name == 'out_text':
-        # b = tf.get_variable(name='b/out_image_', shape=[2048],
-        #                     initializer=tf.random_normal_initializer)
-        b = tf.get_variable(name='b/out_text_' + str(i), shape=[2757],
                             initializer=tf.random_normal_initializer(stddev=image_stdv))
 
     return b
@@ -93,14 +45,12 @@ def biases(name, hidden_size, i):
 def message_pass(label, x, hidden_size, batch_size, num_category, graph):
 
     w_hidden_state = weights(label + '_hidden_state_out', hidden_size, 0)
-    #b_hidden_state = biases('hidden_state_out', hidden_size, 0)
     x_all = tf.reshape(tf.matmul(
         tf.reshape(x[:,0,:], [batch_size, hidden_size]),
         w_hidden_state),
                        [batch_size, hidden_size])
     for i in range(1, num_category):
         w_hidden_state = weights(label + '_hidden_state_out', hidden_size, i)
-        #b_hidden_state = biases('hidden_state_out', hidden_size, i)
         x_all_ = tf.reshape(tf.matmul(
             tf.reshape(x[:, i, :], [batch_size, hidden_size]),
             w_hidden_state),
@@ -131,8 +81,6 @@ def message_pass(label, x, hidden_size, batch_size, num_category, graph):
     return x
 
 
-
-#def GNN(image, batch_size, hidden_size, keep_prob, n_steps, mask_x, num_category, graph):
 def GNN(label, data, batch_size, hidden_size, n_steps, num_category, graph):
 
     gru_cell = GRUCell(hidden_size)
@@ -154,10 +102,7 @@ def GNN(label, data, batch_size, hidden_size, n_steps, num_category, graph):
     with tf.variable_scope("gnn"):
         for step in range(n_steps):
             if step > 0: tf.get_variable_scope().reuse_variables()
-            # state = state * mask_x
             x = message_pass(label, state, hidden_size, batch_size, num_category, graph)
-            # x = tf.reshape(x, [batch_size*num_category, hidden_size])
-            # state = tf.reshape(state, [batch_size*num_category, hidden_size])
             (x_new, state_new) = gru_cell(x[0], state[0])
             state_new = tf.transpose(state_new, (1, 0))
             state_new = tf.multiply(state_new, enable_node[0])
@@ -168,21 +113,5 @@ def GNN(label, data, batch_size, hidden_size, n_steps, num_category, graph):
                 state_ = tf.multiply(state_, enable_node[i])
                 state_ = tf.transpose(state_, (1, 0))
                 state_new = tf.concat([state_new, state_], 0)
-            # x = tf.reshape(x, [batch_size, num_category, hidden_size])
             state = tf.reshape(state_new, [batch_size, num_category, hidden_size])  # #restore: 2 rank to 3 rank
-            # state = state * mask_x
-            # state = tf.nn.dropout(state, keep_prob)
-
-    # w_out_image = weights('out_image', hidden_size, 0)
-    # b_out_image = biases('out_image', hidden_size, 0)
-    # output = tf.reshape(tf.matmul(state[:, 0, :], w_out_image) + b_out_image, [batch_size, 2048]) #initialize output : [batchsize, 2048]
-    # for i in range(1, num_category):
-    #     w_out_image = weights('out_image', hidden_size, i)
-    #     b_out_image = biases('out_image', hidden_size, i)
-    #     output = tf.concat([output, tf.reshape(
-    #         tf.matmul(state[:, i, :], w_out_image) + b_out_image,
-    #                        [batch_size, 2048])], 1)
-    # output = tf.reshape(output, [batch_size, num_category, 2048])
-    # output = tf.nn.tanh(output)
-
     return state, ini
